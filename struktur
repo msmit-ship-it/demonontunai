@@ -1,6 +1,11 @@
 project/
-├── public/
-│   └── Terminal_Style_Tap_and_Go_Payment_System.html
-├── server.js
-├── package.json
-└── package-lock.json
+├── api/                  # Folder untuk backend API
+│   └── server.js         # Backend server
+├── dashboard/            # Dashboard Backend
+│   ├── views/            # Template EJS
+│   ├── public/           # Static files (CSS, JS, Images)
+│   └── routes.js         # Routing file
+├── public/               # Frontend static files
+│   └── index.html        # Halaman utama frontend
+├── package.json          # Node.js configuration
+└── vercel.json           # Vercel configuration
