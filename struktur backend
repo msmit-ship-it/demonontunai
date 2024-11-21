@@ -1,0 +1,9 @@
+project/
+├── api/                # Folder untuk API
+│   └── server.js       # File server utama
+├── dashboard/          # Folder untuk Dashboard Backend
+│   ├── public/         # Static files (CSS, JS, Images)
+│   ├── views/          # Template files (HTML/EJS)
+│   └── routes.js       # Routing file untuk Dashboard
+├── package.json        # Node.js configuration
+└── package-lock.json
