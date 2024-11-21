@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Details</title>
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <section class="content">
+            <div class="container">
+                <h1 class="my-4">Transaction Details</h1>
+                <ul>
+                    <li><strong>ID:</strong> <%= transaction.id %></li>
+                    <li><strong>Category:</strong> <%= transaction.category %></li>
+                    <li><strong>Type:</strong> <%= transaction.type %></li>
+                    <li><strong>Payment Method:</strong> <%= transaction.payment_method %></li>
+                    <li><strong>Date:</strong> <%= transaction.payment_date %></li>
+                </ul>
+                <a href="/" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </section>
+    </div>
+    <script src="/dist/js/adminlte.min.js"></script>
+</body>
+</html>
