@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap & Go Payment System - Terminal Style</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        /* Terminal-like Styling */
+        body {
+            font-family: monospace;
+            background-color: #1e1e1e; /* Dark background */
+            color: #00ff00; /* Green text */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .frame {
+            background-color: #333; /* Darker container background */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            width: 320px;
+            text-align: left; /* Left align for a terminal feel */
+            color: #00ff00;
+        }
+
+        /* Headers */
+        h2 {
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        /* Date and Time */
+        .datetime, .receipt, .footer {
+            color: #00ff00;
+        }
+
+        /* Button Styles */
+        .button-group .button {
+            background-color: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 5px;
+            width: 48%;
+            text-align: center;
+        }
+
+        .button-group .button.active {
+            background-color: #555; /* Highlight selected button */
+        }
+
+        .payment-button, .print-button {
+            background-color: #444;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Receipt Styling */
+        .receipt {
+            display: none;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center; /* Center-align receipt content */
+        }
+
+        /* Center QR Code */
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="frame">
+    <h2>Tap & Go Ticketing</h2>
+
+    <!-- Date and Time Display -->
+    <div class="datetime">
+        <p id="currentDate">-</p>
+        <p id="currentTime">-</p>
+    </div>
+
+    <!-- Ticket Type (Automatic Weekday/Weekend) -->
+    <p><strong>Ticket Category:</strong> <span id="ticketCategory">-</span></p>
+
+    <!-- Ticket Type Selection -->
+    <div class="button-group">
+        <button class="button" onclick="selectType('Regular')">Regular</button>
+        <button class="button" onclick="selectType('Premium')">Premium</button>
+    </div>
+
+    <!-- Payment Method Selection -->
+    <p><strong>Select Payment Method:</strong></p>
+    <div class="button-group">
+        <button class="button" onclick="selectPaymentMethod('eMoney Card')">eMoney Card</button>
+        <button class="button" onclick="selectPaymentMethod('QRIS')">QRIS</button>
+    </div>
+
+    <!-- Payment Button -->
+    <button class="payment-button" onclick="makePayment()">Tap to Pay</button>
+
+    <!-- Print Receipt Button -->
+    <button class="print-button" onclick="printReceipt()">Print Receipt</button>
+
+    <!-- Receipt Display -->
+    <div class="receipt" id="receipt">
+        <p><strong>Receipt</strong></p>
+        <p>Category: <span id="selectedCategory">-</span></p>
+        <p>Type: <span id="selectedType">-</span></p>
+        <p>Payment Method: <span id="selectedPaymentMethod">-</span></p>
+        <p>Date: <span id="paymentDate">-</span></p>
+        <p>Show this receipt to staff to receive your wristband.</p>
+        <!-- QR Code Area -->
+        <div id="qrcode"></div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <p>Design by Yoel Liem</p>
+</div>
+
+<script>
+    let selectedType = '';
+    let selectedPaymentMethod = '';
+
+    // Set up automatic date and time
+    function updateDateTime() {
+        const now = new Date();
+        const day = now.getDay(); // Get the day of the week
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        
+        // Display date and time
+        document.getElementById('currentDate').innerText = now.toDateString();
+        document.getElementById('currentTime').innerText = `${hours}:${minutes}:${seconds}`;
+        
+        // Set Ticket Category based on day
+        const category = (day === 0 || day === 6) ? 'Weekend' : 'Weekday';
+        document.getElementById('ticketCategory').innerText = category;
+    }
+
+    setInterval(updateDateTime, 1000); // Update every second
+
+    // Ticket Type Selection
+    function selectType(type) {
+        selectedType = type;
+        document.querySelectorAll('.button-group')[0].querySelectorAll('.button').forEach(button => button.classList.remove('active'));
+        document.querySelectorAll('.button-group')[0].querySelector(`button:contains("${type}")`).classList.add('active');
+    }
+
+    // Payment Method Selection
+    function selectPaymentMethod(method) {
+        selectedPaymentMethod = method;
+        document.querySelectorAll('.button-group')[1].querySelectorAll('.button').forEach(button => button.classList.remove('active'));
+        document.querySelectorAll('.button-group')[1].querySelector(`button:contains("${method}")`).classList.add('active');
+    }
+
+    // Process Payment
+    function makePayment() {
+        const category = document.getElementById('ticketCategory').innerText;
+        
+        if (category && selectedType && selectedPaymentMethod) {
+            document.getElementById('selectedCategory').innerText = category;
+            document.getElementById('selectedType').innerText = selectedType;
+            document.getElementById('selectedPaymentMethod').innerText = selectedPaymentMethod;
+            document.getElementById('paymentDate').innerText = new Date().toLocaleDateString();
+            document.getElementById('receipt').style.display = 'block';
+            document.querySelector('.print-button').style.display = 'block'; // Show print button
+
+            // Generate QR Code
+            const qrcodeData = `${category}-${selectedType}-${selectedPaymentMethod}-${new Date().getTime()}`;
+            document.getElementById('qrcode').innerHTML = ""; // Clear any previous QR code
+            new QRCode(document.getElementById("qrcode"), {
+                text: qrcodeData,
+                width: 100,
+                height: 100,
+                colorDark : "#00ff00",
+                colorLight : "#333",
+            });
+        } else {
+            alert("Please select both ticket type and payment method.");
+        }
+    }
+
+    // Print Receipt
+    function printReceipt() {
+        document.getElementById('receipt').style.display = 'block'; // Ensure QR Code is visible
+        const printContent = document.getElementById('receipt').innerHTML;
+        const originalContent = document.body.innerHTML;
+
+        document.body.innerHTML = `<div>${printContent}</div>`;
+        window.print();
+        document.body.innerHTML = originalContent;
+        location.reload(); // Reload the page to restore original content
+    }
+</script>
+
+</body>
+</html>
