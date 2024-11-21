@@ -146,6 +146,55 @@
 </div>
 
 <script>
+    // Fungsi untuk mengirim data transaksi ke server
+function makePayment() {
+    const category = document.getElementById('ticketCategory').innerText;
+    
+    if (category && selectedType && selectedPaymentMethod) {
+        document.getElementById('selectedCategory').innerText = category;
+        document.getElementById('selectedType').innerText = selectedType;
+        document.getElementById('selectedPaymentMethod').innerText = selectedPaymentMethod;
+        document.getElementById('paymentDate').innerText = new Date().toLocaleDateString();
+        document.getElementById('receipt').style.display = 'block';
+        document.querySelector('.print-button').style.display = 'block'; // Show print button
+
+        // Generate QR Code
+        const qrcodeData = `${category}-${selectedType}-${selectedPaymentMethod}-${new Date().getTime()}`;
+        document.getElementById('qrcode').innerHTML = ""; // Clear any previous QR code
+        new QRCode(document.getElementById("qrcode"), {
+            text: qrcodeData,
+            width: 100,
+            height: 100,
+            colorDark : "#00ff00",
+            colorLight : "#333",
+        });
+
+        // Kirim data ke server
+        const transactionData = {
+            category: category,
+            type: selectedType,
+            paymentMethod: selectedPaymentMethod,
+        };
+
+        fetch("http://localhost:3000/api/payment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(transactionData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Payment saved:", data);
+        })
+        .catch(error => {
+            console.error("Error saving payment:", error);
+        });
+    } else {
+        alert("Please select both ticket type and payment method.");
+    }
+}
+
     let selectedType = '';
     let selectedPaymentMethod = '';
 
