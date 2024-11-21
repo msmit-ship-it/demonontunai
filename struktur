@@ -1,0 +1,6 @@
+project/
+├── public/
+│   └── Terminal_Style_Tap_and_Go_Payment_System.html
+├── server.js
+├── package.json
+└── package-lock.json
