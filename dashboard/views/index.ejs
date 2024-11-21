@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <section class="content">
+            <div class="container">
+                <h1 class="my-4">Dashboard</h1>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Payment Method</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% transactions.forEach(transaction => { %>
+                        <tr>
+                            <td><%= transaction.id %></td>
+                            <td><%= transaction.category %></td>
+                            <td><%= transaction.type %></td>
+                            <td><%= transaction.payment_method %></td>
+                            <td><%= transaction.payment_date %></td>
+                            <td><a href="/transaction/<%= transaction.id %>" class="btn btn-primary">Details</a></td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <script src="/dist/js/adminlte.min.js"></script>
+</body>
+</html>
